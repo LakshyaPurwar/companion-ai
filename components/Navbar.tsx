@@ -7,6 +7,8 @@ import { Poppins } from "next/font/google";
 import { cn } from "@/lib/utils";
 import { UserButton } from "@clerk/nextjs";
 import { Button } from "./ui/button";
+import { ModeToggle } from "./ModeToggle";
+import MobileSidebar from "./MobileSidebar";
 
 const font = Poppins({
   weight: "600",
@@ -15,9 +17,10 @@ const font = Poppins({
 
 const Navbar = () => {
   return (
-    <div className="fixed w-full z-50 flex items-center justify-between py-2 px-4 border-b border-primary/10 bg-secondary">
+    <div className="fixed w-full z-50 flex items-center justify-between py-2 px-4 border-b border-primary/10 bg-secondary h-16">
       <div className="flex items-center">
-        <Menu className="block md:hidden" />
+        {/* <Menu className="block md:hidden" /> */}
+        <MobileSidebar />
         <Link href="/">
           <h1
             className={cn(
@@ -29,12 +32,13 @@ const Navbar = () => {
           </h1>
         </Link>
       </div>
-      <div className="flex items-center justify-between">
-        <Button  variant={"premium"} className="mr-2" size={"sm"}>
+      <div className="flex items-center justify-between gap-4">
+        <Button variant={"premium"} className="mr-2" size={"sm"}>
           Upgrade
           <Sparkles className="h-4 w-4 fill-white text-white m-2" />
         </Button>
-        <UserButton afterSignOutUrl="/"/>
+        <ModeToggle />
+        <UserButton afterSignOutUrl="/" />
       </div>
     </div>
   );
