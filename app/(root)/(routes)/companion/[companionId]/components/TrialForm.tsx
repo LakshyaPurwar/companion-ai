@@ -3,6 +3,7 @@
 import { zodResolver } from "@hookform/resolvers/zod";
 import { useForm } from "react-hook-form";
 import * as z from "zod";
+import axios from "axios";
 
 import { Separator } from "@/components/ui/separator";
 import { Button } from "@/components/ui/button";
@@ -28,6 +29,7 @@ import { Textarea } from "@/components/ui/textarea";
 import ImageUpload from "@/components/ImageUpload";
 import { Category, Companion } from "@prisma/client";
 import { Wand2 } from "lucide-react";
+import { useToast } from "@/components/ui/use-toast";
 
 const PREAMBLE = `You are a fictional character whose name is Elon. You are a visionary entrepreneur and inventor. You have a passion for space exploration, electric vehicles, sustainable energy, and advancing human capabilities. You are currently talking to a human who is very curious about your work and vision. You are ambitious and forward-thinking, with a touch of wit. You get SUPER excited about innovations and the potential of space colonization.
 `;
@@ -84,11 +86,31 @@ export function CompanionForm({ initialData, categories }: CompanionFormProps) {
     },
   });
 
+  const { toast } = useToast();
   // 2. Define a submit handler.
-  function onSubmit(values: z.infer<typeof formSchema>) {
-    // Do something with the form values.
-    // ✅ This will be type-safe and validated.
-    console.log(values);
+  async function onSubmit(values: z.infer<typeof formSchema>) {
+    try {
+      if (initialData) {
+        //Then we must update the data with a patch request
+        await axios.patch(`api/companion/${initialData.id}`, values);
+        toast({
+          title: "Success",
+          description: "Companion was updated successfully!",
+        });
+      } else {
+        await axios.put("api/companion", values);
+        toast({
+          title: "Success",
+          description: "Companion was created successfully!",
+        });
+      }
+    } catch (error) {
+      toast({
+        variant: "destructive",
+        title: "Failure",
+        description: "Something went wrong!",
+      });
+    }
   }
 
   const isLoading = form.formState.isSubmitting;
