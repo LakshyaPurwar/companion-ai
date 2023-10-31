@@ -38,7 +38,7 @@ const SearchInput = () => {
   }, [debouncedValue, router, categoryId]);
 
   return (
-    <div className="relative">
+    <div className="relative mb-4">
       <Search className="absolute h-4 w-4 top-3 left-4 text-muted-foreground" />
       <Input
         onChange={onChange}
