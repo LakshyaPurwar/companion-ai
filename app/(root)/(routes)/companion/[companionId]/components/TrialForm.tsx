@@ -4,6 +4,7 @@ import { zodResolver } from "@hookform/resolvers/zod";
 import { useForm } from "react-hook-form";
 import * as z from "zod";
 import axios from "axios";
+import { useRouter } from "next/navigation";
 
 import { Separator } from "@/components/ui/separator";
 import { Button } from "@/components/ui/button";
@@ -87,23 +88,27 @@ export function CompanionForm({ initialData, categories }: CompanionFormProps) {
   });
 
   const { toast } = useToast();
+  const router = useRouter();
   // 2. Define a submit handler.
   async function onSubmit(values: z.infer<typeof formSchema>) {
     try {
       if (initialData) {
         //Then we must update the data with a patch request
-        await axios.patch(`api/companion/${initialData.id}`, values);
+        await axios.patch(`/api/companion/${initialData.id}`, values);
         toast({
           title: "Success",
           description: "Companion was updated successfully!",
         });
       } else {
-        await axios.put("api/companion", values);
+        await axios.post("/api/companion", values);
         toast({
           title: "Success",
           description: "Companion was created successfully!",
         });
       }
+
+      router.refresh();
+      router.push("/");
     } catch (error) {
       toast({
         variant: "destructive",
